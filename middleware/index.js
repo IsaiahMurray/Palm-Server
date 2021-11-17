@@ -1,4 +1,4 @@
 module.exports = {
-    validateSession: require('./validateSession'),
-    headers: require('./headers')
+    ValidateSession: require('./validateSession'),
+    Headers: require('./headers')
 }
