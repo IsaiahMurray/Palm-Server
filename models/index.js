@@ -1,3 +1,20 @@
+const UserModel= require("./user"),
+const CategoryModel= require("./category"),
+const ListModel= require("./list"),
+const TodoModel= require("./todo"),
+const DeckModel= require("./deck"),
+const IconModel= require("./icon"),
+const NotebookModel= require("./notebook"),
+const NotebookCategoryModel= require("./notebookCategory"),
+const NoteCardModel= require("./noteCard"),
+const PageModel= require("./page"),
+const HabitModel= require("./habit")
+
+UserModel.hasMany(ListModel, {
+  as: "lists",
+  foreignKey: "ownerId"
+})
+
 module.exports = {
     UserModel: require("./user"),
     CategoryModel: require("./category"),
@@ -9,6 +26,6 @@ module.exports = {
     NotebookCategoryModel: require("./notebookCategory"),
     NoteCardModel: require("./noteCard"),
     PageModel: require("./page"),
-    HabitModel: require("./habit"),
+    HabitModel: require("./habit")
   };
   
