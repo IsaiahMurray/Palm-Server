@@ -6,13 +6,13 @@ const List = db.define('list', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    name: {
+    title: {
         type: DataTypes.STRING,
         allowNull: false
     },
     description: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     }
 })
 

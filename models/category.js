@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize');
 const db = require('../db');
 
-const Category = db.define('list', {
+const Category = db.define('category', {
     ownerId: {
         type: DataTypes.INTEGER,
         allowNull: false

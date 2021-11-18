@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize');
 const db = require('../db');
 
-const Page = db.define('list', {
+const Page = db.define('page', {
     ownerId: {
         type: DataTypes.INTEGER,
         allowNull: false

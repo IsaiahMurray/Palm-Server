@@ -9,7 +9,6 @@ const NotebookCategoryModel = require("./notebookCategory");
 const NoteCardModel = require("./noteCard");
 const PageModel = require("./page");
 const HabitModel = require("./habit");
-const User = require("./user");
 
 UserModel.hasMany(ListModel, {
   as: "lists",
