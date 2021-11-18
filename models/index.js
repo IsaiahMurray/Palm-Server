@@ -14,6 +14,20 @@ UserModel.hasMany(ListModel, {
   as: "lists",
   foreignKey: "ownerId"
 })
+ListModel.belongsTo(UserModel);
+
+ListModel.hasMany(TodoModel, {
+  as: "todoItems",
+  foreignKey: "listId"
+})
+TodoModel.belongsTo(ListModel);
+
+UserModel.hasMany(TodoModel, {
+  as: "todoItems",
+  foreignKey: "ownerId"
+})
+TodoModel.belongsTo(UserModel);
+
 
 module.exports = {
     UserModel: require("./user"),
