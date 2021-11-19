@@ -30,4 +30,4 @@ dbConnection
     console.error(chalk.redBright(err));
   });
 
-// app.use(middlewares.Headers);
+app.use(middlewares.Headers);

@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize');
 const db = require('../db');
 
-const Todo = db.define('todo', {
+const Todo = db.define('task', {
     ownerId: {
         type: DataTypes.INTEGER,
         allowNull: false
