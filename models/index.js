@@ -1,7 +1,7 @@
 const UserModel = require("./user");
 const CategoryModel = require("./category");
 const ListModel = require("./list");
-const TodoModel = require("./todo");
+const TaskModel = require("./task");
 const DeckModel = require("./deck");
 const IconModel = require("./icon");
 const NotebookModel = require("./notebook");
@@ -16,11 +16,11 @@ UserModel.hasMany(ListModel, {
 });
 ListModel.belongsTo(UserModel);
 
-ListModel.hasMany(TodoModel, {
-  as: "todoItems",
+ListModel.hasMany(TaskModel, {
+  as: "tasks",
   foreignKey: "listId",
 });
-TodoModel.belongsTo(ListModel);
+TaskModel.belongsTo(ListModel);
 
 // UserModel.hasMany(TodoModel, {
 //   as: "todoItems",
@@ -62,7 +62,7 @@ module.exports = {
   UserModel,
   CategoryModel,
   ListModel,
-  TodoModel,
+  TaskModel,
   DeckModel,
   IconModel,
   NotebookModel,
