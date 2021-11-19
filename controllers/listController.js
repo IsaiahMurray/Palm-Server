@@ -33,11 +33,11 @@ router.post("/create", async (req, res) => {
 });
 
 //! GET ALL LISTS FROM SINGLE USER
-router.get("/", async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     const allLists = await ListModel.findAll({
       where: { ownerId: req.user.id },
-      include: [{ model: TodoModel, as: "todo Items" }],
+      //include: [{ model: TodoModel, as: "todo Items" }],
       required: true,
     });
 
@@ -53,7 +53,7 @@ router.get("/", async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: `Lists could not be created: ${err}`,
+      message: `Lists could not be retrieved: ${err}`,
     });
   }
 });
