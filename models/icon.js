@@ -4,7 +4,7 @@ const db = require('../db');
 const Icon = db.define('icon',{
     description: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true
     }
 })
