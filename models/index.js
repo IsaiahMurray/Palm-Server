@@ -46,6 +46,12 @@ NotebookModel.hasMany(PageModel, {
 })
 PageModel.belongsTo(NotebookModel);
 
+UserModel.hasMany(PageModel, {
+  as: "pages",
+  foreignKey: "userId"
+})
+PageModel.belongsTo(UserModel);
+
 UserModel.hasMany(DeckModel, {
   as: "decks",
   foreignKey: "userId"
