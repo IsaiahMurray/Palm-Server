@@ -55,35 +55,34 @@ router.get("/test", function (req, res) {
 
   
   //! UPDATE ICON BY ID
-  router.put("/edit/:listId", async (req, res) => {
-    const { title, description } = req.body;
+  router.put("/edit/:iconId", async (req, res) => {
   
     try {
-      const updatedList = await ListModel.update(
-        { title, description },
-        { where: { id: req.params.listId, userId: req.user.id } }
+      const updatedIcon = await IconModel.update(
+        {description: req.body.description },
+        { where: { id: req.params.iconId } }
       );
   
       res.status(200).json({
-        message: "List has been updated!",
-        updatedList,
+        message: "Icon has been updated!",
+        updatedIcon,
       });
     } catch (err) {
       res.status(500).json({
-        message: `Could not update list: ${err}`,
+        message: `Could not update icon: ${err}`,
       });
     }
   });
   
   //! DELETE ICON BY ID
   router.delete("/delete/:id", async (req, res) => {
-    const query = { where: { id: req.params.id, userId: req.user.id } };
+    const query = { where: { id: req.params.id } };
   
     try {
-      const destroyedList = await ListModel.destroy(query);
+      const destroyedIcon = await IconModel.destroy(query);
       res.status(200).json({
-        message: "List has been destroyed!",
-        destroyedList,
+        message: "Icon has been destroyed!",
+        destroyedIcon,
       });
     } catch (err) {
       res.status(500).json({
