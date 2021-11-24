@@ -80,7 +80,7 @@ router.get("/:id", async (req, res) => {
     if (err === 404) {
       res.status(404).json({
         message: "Could not find that list",
-        error: err
+        error: err,
       });
     } else {
       res.status(500).json({
