@@ -65,7 +65,7 @@ router.get("/:title", (req, res) => {
 
   ListModel.findAll({
     where: { title: title, userId: req.user.id },
-    include: [{ model: TodoModel, as: "todoItems" }],
+    include: [{ model: TaskModel, as: "tasks" }],
     required: true,
   })
     .then((lists) => res.status(200).json(lists))
