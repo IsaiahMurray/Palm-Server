@@ -58,23 +58,36 @@ router.get("/all", async (req, res) => {
   }
 });
 
-
 //! GET LISTS BY TITLE
-router.get("/:title", (req, res) => {
+router.get("/:title", async (req, res) => {
   let title = req.params.title;
-
-  ListModel.findAll({
-    where: { title: title, userId: req.user.id },
-    include: [{ model: TaskModel, as: "tasks" }],
-    required: true,
-  })
-    .then((lists) => res.status(200).json(lists))
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ error: err });
+  try {
+    const foundList = await ListModel.findAll({
+      where: { title: title, userId: req.user.id },
+      include: [{ model: TaskModel, as: "tasks" }],
+      required: true,
     });
+    if (foundList.length === 0) {
+      throw 404;
+    } else {
+      res.status(200).json({
+        message: "Successfully retreived",
+        foundList,
+      });
+    }
+  } catch (err) {
+    if (err === 404) {
+      res.status(404).json({
+        message: "Could not retreive lists",
+        error: "You have no lists by that title",
+      });
+    } else {
+      res.status(500).json({
+        message: `Lists could not be retrieved: ${err}`,
+      });
+    }
+  }
 });
-
 
 //! UPDATE LIST BY ID
 router.put("/edit/:listId", async (req, res) => {
@@ -96,7 +109,6 @@ router.put("/edit/:listId", async (req, res) => {
     });
   }
 });
-
 
 //! DELETE LIST BY ID
 router.delete("/delete/:id", async (req, res) => {
