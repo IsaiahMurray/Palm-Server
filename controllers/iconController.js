@@ -28,6 +28,23 @@ router.get("/test", function (req, res) {
       );
     }
   });
+
+   //! GET ICON BY ID 
+   router.get("/:iconId", async (req, res) => {
+    try {
+      const icon = await IconModel.findOne({where: {id: req.params.iconId}});
+  
+     res.status(200).json({
+          message: "Icons have successfully been retrieved",
+          icon,
+        });
+      
+    }catch (err) {
+      res.status(500).json({
+        message: `Icon could not be retrieved: ${err}`,
+      });
+    }
+  });
   
   //! GET ALL ICONS
   router.get("/all", async (req, res) => {
