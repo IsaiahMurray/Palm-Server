@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { CategoryModel } = require("../models");
+const { CategoryModel, ListModel } = require("../models");
 const chalk = require("chalk");
 
 
@@ -34,22 +34,22 @@ router.get("/test", function (req, res) {
   });
   
   //! GET ALL CATEGORIES FROM SINGLE USER
-  router.get("/all", async (req, res) => {
+  router.get("/", async (req, res) => {
     try {
-      const allLists = await CategoryModel.findAll({
+      const categories = await CategoryModel.findAll({
         where: { userId: req.user.id },
         //include: [{ model: TodoModel, as: "todo Items" }],
         required: true,
       });
   
-      if (allLists.length === 0 || null) {
+      if (categories.length === 0 || null) {
         return res.status(204).json({
-          message: "You do not have any lists yet. Go make some!",
+          message: "You do not have any categories yet. Go make some!",
         });
       } else {
         return res.status(200).json({
-          message: "Lists have successfully been retrieved",
-          allLists,
+          message: "Categories have successfully been retrieved",
+          categories,
         });
       }
     } catch (err) {
@@ -58,18 +58,46 @@ router.get("/test", function (req, res) {
       });
     }
   });
+
+   //! GET ALL CATEGORIES WITH LISTS FROM SINGLE USER
+   router.get("/lists", async (req, res) => {
+    try {
+      const categories = await CategoryModel.findAll({
+        where: { userId: req.user.id },
+        include: [{ model: ListModel, as: "lists" }],
+        required: true,
+      });
+  
+      if (categories.length === 0 || null) {
+        return res.status(204).json({
+          message: "You do not have any categories yet. Go make some!",
+        });
+      } else {
+        return res.status(200).json({
+          message: "Categories have successfully been retrieved",
+          categories,
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        message: `Lists could not be retrieved: ${err}`,
+      });
+    }
+  });
+
+
   
   //! GET CATEGORY BY ID
   router.get("/:id", async (req, res) => {
     let id = req.params.id;
     try {
-      const foundList = await ListModel.findOne({
+      const category = await CategoryModel.findOne({
         where: { id: id, userId: req.user.id },
-        include: [{ model: TaskModel, as: "tasks" }],
+        include: [{ model: ListModel, as: "lists" }],
         required: true,
       });
   
-      if (foundList.length === 0 || null) {
+      if (category.length === 0 || null) {
         throw 404;
       } else {
         res.status(200).json({
@@ -80,12 +108,12 @@ router.get("/test", function (req, res) {
     } catch (err) {
       if (err === 404) {
         res.status(404).json({
-          message: "Could not find that list",
+          message: "Could not find that category",
           error: err,
         });
       } else {
         res.status(500).json({
-          message: `List could not be retrieved: ${err}`,
+          message: `Category could not be retrieved: ${err}`,
         });
       }
     }
@@ -95,12 +123,12 @@ router.get("/test", function (req, res) {
   router.get("/:title", async (req, res) => {
     let title = req.params.title;
     try {
-      const foundList = await ListModel.findAll({
+      const category = await CategoryModel.findAll({
         where: { title: title, userId: req.user.id },
-        include: [{ model: TaskModel, as: "tasks" }],
+        include: [{ model: ListModel, as: "lists" }],
         required: true,
       });
-      if (foundList.length === 0 || null) {
+      if (category.length === 0 || null) {
         throw 404;
       } else {
         res.status(200).json({
@@ -111,34 +139,34 @@ router.get("/test", function (req, res) {
     } catch (err) {
       if (err === 404) {
         res.status(404).json({
-          message: "Could not retreive lists",
-          error: "You have no lists by that title",
+          message: "Could not retreive category",
+          error: "You have no category by that title",
         });
       } else {
         res.status(500).json({
-          message: `Lists could not be retrieved: ${err}`,
+          message: `Category could not be retrieved: ${err}`,
         });
       }
     }
   });
   
   //! UPDATE CATEGORY BY ID
-  router.put("/edit/:listId", async (req, res) => {
-    const { title, description } = req.body;
+  router.put("/edit/:categoryId", async (req, res) => {
+    const { title, iconId } = req.body;
   
     try {
       const updatedList = await ListModel.update(
-        { title, description },
-        { where: { id: req.params.listId, userId: req.user.id } }
+        { title, iconId },
+        { where: { id: req.params.categoryId, userId: req.user.id } }
       );
   
       res.status(200).json({
-        message: "List has been updated!",
+        message: "Category has been updated!",
         updatedList,
       });
     } catch (err) {
       res.status(500).json({
-        message: `Could not update list: ${err}`,
+        message: `Could not update category: ${err}`,
       });
     }
   });
@@ -148,14 +176,14 @@ router.get("/test", function (req, res) {
     const query = { where: { id: req.params.id, userId: req.user.id } };
   
     try {
-      const destroyedList = await ListModel.destroy(query);
+      const destroyedCategory = await ListModel.destroy(query);
       res.status(200).json({
-        message: "List has been destroyed!",
-        destroyedList,
+        message: "Category has been destroyed!",
+        destroyedCategory,
       });
     } catch (err) {
       res.status(500).json({
-        message: `Could not destroy list: ${err}`,
+        message: `Could not destroy category: ${err}`,
       });
     }
   });
