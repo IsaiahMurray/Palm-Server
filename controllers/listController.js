@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { ListModel, TodoModel } = require("../models");
+const { ListModel, TaskModel } = require("../models");
 const chalk = require("chalk");
 
 //! TEST ENDPOINT
@@ -13,7 +13,7 @@ router.post("/create", async (req, res) => {
   const listEntry = {
     title: title,
     description: description,
-    ownerId: req.user.id,
+    userId: req.user.id,
   };
 
   try {
@@ -36,7 +36,7 @@ router.post("/create", async (req, res) => {
 router.get("/all", async (req, res) => {
   try {
     const allLists = await ListModel.findAll({
-      where: { ownerId: req.user.id },
+      where: { userId: req.user.id },
       //include: [{ model: TodoModel, as: "todo Items" }],
       required: true,
     });
@@ -64,7 +64,7 @@ router.get("/:title", (req, res) => {
   let title = req.params.title;
 
   ListModel.findAll({
-    where: { title: title, ownerId: req.user.id },
+    where: { title: title, userId: req.user.id },
     include: [{ model: TodoModel, as: "todoItems" }],
     required: true,
   })
@@ -83,7 +83,7 @@ router.put("/edit/:listId", async (req, res) => {
   try {
     const updatedList = await ListModel.update(
       { title, description },
-      { where: { id: req.params.listId, ownerId: req.user.id } }
+      { where: { id: req.params.listId, userId: req.user.id } }
     );
 
     res.status(200).json({
@@ -100,7 +100,7 @@ router.put("/edit/:listId", async (req, res) => {
 
 //! DELETE LIST BY ID
 router.delete("/delete/:id", async (req, res) => {
-  const query = { where: { id: req.params.id, ownerId: req.user.id } };
+  const query = { where: { id: req.params.id, userId: req.user.id } };
 
   try {
     const destroyedList = await ListModel.destroy(query);
