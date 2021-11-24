@@ -12,7 +12,7 @@ const HabitModel = require("./habit");
 
 UserModel.hasMany(ListModel, {
   as: "lists",
-  foreignKey: "ownerId",
+  foreignKey: "userId",
 });
 ListModel.belongsTo(UserModel);
 
