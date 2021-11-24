@@ -31,6 +31,5 @@ const ValidateAdmin = (req, res, next) => {
     });
   }
 };
-//};
 
 module.exports = ValidateAdmin;

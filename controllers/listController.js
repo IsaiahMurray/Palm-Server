@@ -58,6 +58,38 @@ router.get("/all", async (req, res) => {
   }
 });
 
+//! GET LISTS BY ID
+router.get("/:id", async (req, res) => {
+  let id = req.params.id;
+  try {
+    const foundList = await ListModel.findOne({
+      where: { id: id, userId: req.user.id },
+      include: [{ model: TaskModel, as: "tasks" }],
+      required: true,
+    });
+
+    if (foundList.length === 0 || null) {
+      throw 404;
+    } else {
+      res.status(200).json({
+        message: "Successfully retreived",
+        foundList,
+      });
+    }
+  } catch (err) {
+    if (err === 404) {
+      res.status(404).json({
+        message: "Could not find that list",
+        error: err
+      });
+    } else {
+      res.status(500).json({
+        message: `List could not be retrieved: ${err}`,
+      });
+    }
+  }
+});
+
 //! GET LISTS BY TITLE
 router.get("/:title", async (req, res) => {
   let title = req.params.title;
@@ -67,7 +99,7 @@ router.get("/:title", async (req, res) => {
       include: [{ model: TaskModel, as: "tasks" }],
       required: true,
     });
-    if (foundList.length === 0) {
+    if (foundList.length === 0 || null) {
       throw 404;
     } else {
       res.status(200).json({
