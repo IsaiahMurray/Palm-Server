@@ -2,7 +2,7 @@ const {DataTypes} = require('sequelize');
 const db = require('../db');
 
 const Category = db.define('category', {
-    ownerId: {
+    userId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

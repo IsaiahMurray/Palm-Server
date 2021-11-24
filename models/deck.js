@@ -2,7 +2,7 @@ const {DataTypes} = require('sequelize');
 const db = require('../db');
 
 const Deck = db.define('deck', {
-    ownerId: {
+    userId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

@@ -2,7 +2,7 @@ const {DataTypes} = require('sequelize');
 const db = require('../db');
 
 const Page = db.define('page', {
-    ownerId: {
+    userId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

@@ -2,7 +2,7 @@ const {DataTypes} = require('sequelize');
 const db = require('../db');
 
 const Habit = db.define('habit', {
-    ownerId: {
+    userId: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
