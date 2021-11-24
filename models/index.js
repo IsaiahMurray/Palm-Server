@@ -22,21 +22,21 @@ ListModel.hasMany(TaskModel, {
 });
 TaskModel.belongsTo(ListModel);
 
-// UserModel.hasMany(TodoModel, {
-//   as: "todoItems",
-//   foreignKey: "ownerId",
-// });
-// TodoModel.belongsTo(UserModel);
+UserModel.hasMany(TaskModel, {
+  as: "tasks",
+  foreignKey: "userId",
+});
+TodoModel.belongsTo(UserModel);
 
 UserModel.hasMany(HabitModel, {
   as: "habits",
-  foreignKey: "ownerId"
+  foreignKey: "userId"
 })
 HabitModel.belongsTo(UserModel);
 
 UserModel.hasMany(NotebookModel, {
   as: "notebooks",
-  foreignKey: "ownerId"
+  foreignKey: "userId"
 })
 NotebookModel.belongsTo(UserModel);
 
@@ -48,7 +48,7 @@ PageModel.belongsTo(NotebookModel);
 
 UserModel.hasMany(DeckModel, {
   as: "decks",
-  foreignKey: "ownerId"
+  foreignKey: "userId"
 })
 DeckModel.belongsTo(UserModel);
 
