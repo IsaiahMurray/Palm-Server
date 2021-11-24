@@ -26,7 +26,7 @@ UserModel.hasMany(TaskModel, {
   as: "tasks",
   foreignKey: "userId",
 });
-TodoModel.belongsTo(UserModel);
+TaskModel.belongsTo(UserModel);
 
 UserModel.hasMany(HabitModel, {
   as: "habits",

@@ -11,7 +11,7 @@ const controllers = require("./controllers");
 
 app.use("/user", controllers.UserController);
 app.use("/list", middlewares.ValidateSession, controllers.ListController);
-//app.use('/todo', controllers.TodoController);
+app.use('/task', controllers.TaskController);
 
 dbConnection
   .authenticate()
