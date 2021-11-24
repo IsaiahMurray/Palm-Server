@@ -10,6 +10,7 @@ const NoteCardModel = require("./noteCard");
 const PageModel = require("./page");
 const HabitModel = require("./habit");
 
+//! List, Task, and Category
 UserModel.hasMany(ListModel, {
   as: "lists",
   foreignKey: "userId",
@@ -28,12 +29,14 @@ UserModel.hasMany(TaskModel, {
 });
 TaskModel.belongsTo(UserModel);
 
+//! Habit
 UserModel.hasMany(HabitModel, {
   as: "habits",
   foreignKey: "userId"
 })
 HabitModel.belongsTo(UserModel);
 
+//! Notebook and Page
 UserModel.hasMany(NotebookModel, {
   as: "notebooks",
   foreignKey: "userId"
@@ -52,6 +55,7 @@ UserModel.hasMany(PageModel, {
 })
 PageModel.belongsTo(UserModel);
 
+//! Deck and NoteCard
 UserModel.hasMany(DeckModel, {
   as: "decks",
   foreignKey: "userId"
@@ -63,6 +67,11 @@ DeckModel.hasMany(NoteCardModel, {
   foreignKey: "deckId"
 })
 NoteCardModel.belongsTo(DeckModel);
+
+
+
+
+
 
 module.exports = {
   UserModel,
