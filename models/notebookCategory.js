@@ -6,7 +6,7 @@ const Notebook = db.define('notebookCategory', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    name: {
+    title: {
         type: DataTypes.STRING,
         allowNull: false
     }
