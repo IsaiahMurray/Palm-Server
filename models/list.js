@@ -10,6 +10,10 @@ const List = db.define('list', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     description: {
         type: DataTypes.STRING,
         allowNull: true

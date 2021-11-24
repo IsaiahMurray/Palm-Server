@@ -10,7 +10,7 @@ const NoteCardModel = require("./noteCard");
 const PageModel = require("./page");
 const HabitModel = require("./habit");
 
-//! List, Task, and Category
+//! List and Task
 UserModel.hasMany(ListModel, {
   as: "lists",
   foreignKey: "userId",
@@ -29,12 +29,49 @@ UserModel.hasMany(TaskModel, {
 });
 TaskModel.belongsTo(UserModel);
 
-//! Habit
+//! Category for List, Task, Icon,and User
+UserModel.hasMany(CategoryModel,{
+  as: "list categories",
+  foreignKey: 'userId'
+})
+CategoryModel.belongsTo(UserModel);
+
+ListModel.hasOne(CategoryModel,{
+  as: "category",
+  foreignKey: 'categoryId'
+})
+CategoryModel.belongsTo(ListModel);
+
+TaskModel.hasOne(CategoryModel,{
+  as: "category",
+  foreignKey: 'categoryId'
+})
+CategoryModel.belongsTo(TaskModel);
+
+TaskModel.hasOne(CategoryModel,{
+  as: "subCategory",
+  foreignKey: 'subCategoryId'
+})
+CategoryModel.belongsTo(TaskModel);
+
+CategoryModel.hasOne(IconModel, {
+  as: "icon",
+  foreignKey: 'iconId'
+})
+IconModel.belongsTo(CategoryModel);
+
+//! Habit and Icon
 UserModel.hasMany(HabitModel, {
   as: "habits",
   foreignKey: "userId"
 })
 HabitModel.belongsTo(UserModel);
+
+HabitModel.hasOne(IconModel, {
+  as: "icon",
+  foreignKey: "iconId"
+})
+IconModel.belongsTo(HabitModel);
 
 //! Notebook and Page
 UserModel.hasMany(NotebookModel, {
