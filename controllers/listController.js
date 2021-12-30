@@ -2,6 +2,17 @@ const router = require("express").Router();
 const { ListModel, TaskModel } = require("../models");
 const chalk = require("chalk");
 
+const {
+  CREATE_SUCCESS,
+  UPDATE_SUCCESS,
+  GET_SUCCESS,
+  DELETE_SUCCESS,
+  CREATE_FAIL,
+  UPDATE_FAIL,
+  GET_FAIL,
+  DELETE_FAIL,
+} = require("./constants");
+
 //! TEST ENDPOINT
 router.get("/test", function (req, res) {
   res.send("Hey!! This is the list route!");
@@ -20,7 +31,7 @@ router.post("/create", async (req, res) => {
     const newList = await ListModel.create(listEntry);
 
     res.status(200).json({
-      message: "New list has successfully been created!",
+      message: CREATE_SUCCESS,
       newList,
     });
   } catch (err) {
@@ -47,7 +58,7 @@ router.get("/all", async (req, res) => {
       });
     } else {
       return res.status(200).json({
-        message: "Lists have successfully been retrieved",
+        message: GET_SUCCESS,
         allLists,
       });
     }
@@ -72,7 +83,7 @@ router.get("/:id", async (req, res) => {
       throw 404;
     } else {
       res.status(200).json({
-        message: "Successfully retreived",
+        message: GET_SUCCESS,
         foundList,
       });
     }
@@ -103,19 +114,20 @@ router.get("/:title", async (req, res) => {
       throw 404;
     } else {
       res.status(200).json({
-        message: "Successfully retreived",
+        message: GET_SUCCESS,
         foundList,
       });
     }
   } catch (err) {
     if (err === 404) {
       res.status(404).json({
-        message: "Could not retreive lists",
+        message: GET_FAIL,
         error: "You have no lists by that title",
       });
     } else {
       res.status(500).json({
-        message: `Lists could not be retrieved: ${err}`,
+        message: GET_FAIL,
+        error: err
       });
     }
   }
@@ -132,12 +144,13 @@ router.put("/edit/:listId", async (req, res) => {
     );
 
     res.status(200).json({
-      message: "List has been updated!",
+      message: UPDATE_SUCCESS,
       updatedList,
     });
   } catch (err) {
     res.status(500).json({
-      message: `Could not update list: ${err}`,
+      message: UPDATE_FAIL,
+      error: err
     });
   }
 });
@@ -149,12 +162,12 @@ router.delete("/delete/:id", async (req, res) => {
   try {
     const destroyedList = await ListModel.destroy(query);
     res.status(200).json({
-      message: "List has been destroyed!",
+      message: DELETE_SUCCESS,
       destroyedList,
     });
   } catch (err) {
     res.status(500).json({
-      message: `Could not destroy list: ${err}`,
+      message: DELETE_FAIL,
     });
   }
 });
