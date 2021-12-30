@@ -13,7 +13,6 @@ const {
   DELETE_FAIL,
   NOT_FOUND
 } = require("./constants");
-const { Z_ERRNO } = require("zlib");
 
 //! TEST ENDPOINT
 router.get("/test", function (req, res) {

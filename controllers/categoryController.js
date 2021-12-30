@@ -2,6 +2,18 @@ const router = require("express").Router();
 const { CategoryModel, ListModel } = require("../models");
 const chalk = require("chalk");
 
+const {
+  CREATE_SUCCESS,
+  UPDATE_SUCCESS,
+  GET_SUCCESS,
+  DELETE_SUCCESS,
+  CREATE_FAIL,
+  UPDATE_FAIL,
+  GET_FAIL,
+  DELETE_FAIL,
+  NOT_FOUND
+} = require("./constants");
+const { isError } = require("util");
 
 //! TEST ENDPOINT
 router.get("/test", function (req, res) {
@@ -21,13 +33,14 @@ router.get("/test", function (req, res) {
       const newCategory = await CategoryModel.create(category);
   
       res.status(200).json({
-        message: "New list has category been created!",
+        message: CREATE_SUCCESS,
         newCategory,
       });
     } catch (err) {
       chalk.redBright(
         res.status(500).json({
-          message: `Category could not be created: ${err}`,
+          message: CREATE_FAIL,
+          error: err
         })
       );
     }
@@ -48,13 +61,14 @@ router.get("/test", function (req, res) {
         });
       } else {
         return res.status(200).json({
-          message: "Categories have successfully been retrieved",
+          message: GET_SUCCESS,
           categories,
         });
       }
     } catch (err) {
       res.status(500).json({
-        message: `Lists could not be retrieved: ${err}`,
+        message: GET_FAIL,
+        error: err
       });
     }
   });
@@ -74,19 +88,19 @@ router.get("/test", function (req, res) {
         });
       } else {
         return res.status(200).json({
-          message: "Categories have successfully been retrieved",
+          message: GET_SUCCESS,
           categories,
         });
       }
     } catch (err) {
       res.status(500).json({
-        message: `Lists could not be retrieved: ${err}`,
+        message: GET_FAIL,
+        error: err
       });
     }
   });
 
 
-  
   //! GET CATEGORY BY ID
   router.get("/:id", async (req, res) => {
     let id = req.params.id;
@@ -101,19 +115,20 @@ router.get("/test", function (req, res) {
         throw 404;
       } else {
         res.status(200).json({
-          message: "Successfully retreived",
+          message: GET_SUCCESS,
           foundList,
         });
       }
     } catch (err) {
       if (err === 404) {
         res.status(404).json({
-          message: "Could not find that category",
-          error: err,
+          message: NOT_FOUND,
+          error: `You have no categories: ${err}`,
         });
       } else {
         res.status(500).json({
-          message: `Category could not be retrieved: ${err}`,
+          message: GET_FAIL,
+          error: err
         });
       }
     }
@@ -132,19 +147,20 @@ router.get("/test", function (req, res) {
         throw 404;
       } else {
         res.status(200).json({
-          message: "Successfully retreived",
+          message: GET_SUCCESS,
           foundList,
         });
       }
     } catch (err) {
       if (err === 404) {
         res.status(404).json({
-          message: "Could not retreive category",
-          error: "You have no category by that title",
+          message: GET_FAIL,
+          error: `You have no category by that title: ${err}`,
         });
       } else {
         res.status(500).json({
-          message: `Category could not be retrieved: ${err}`,
+          message: GET_FAIL,
+          error: err
         });
       }
     }
@@ -161,12 +177,13 @@ router.get("/test", function (req, res) {
       );
   
       res.status(200).json({
-        message: "Category has been updated!",
+        message: UPDATE_SUCCESS,
         updatedList,
       });
     } catch (err) {
       res.status(500).json({
-        message: `Could not update category: ${err}`,
+        message: UPDATE_FAIL,
+        error: err
       });
     }
   });
@@ -178,12 +195,13 @@ router.get("/test", function (req, res) {
     try {
       const destroyedCategory = await ListModel.destroy(query);
       res.status(200).json({
-        message: "Category has been destroyed!",
+        message: DELETE_SUCCESS,
         destroyedCategory,
       });
     } catch (err) {
       res.status(500).json({
-        message: `Could not destroy category: ${err}`,
+        message: DELETE_FAIL,
+        error: err
       });
     }
   });
