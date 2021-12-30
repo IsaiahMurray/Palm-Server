@@ -1,5 +1,15 @@
 const router = require("express").Router();
 const { TaskModel } = require("../models");
+const {
+  CREATE_SUCCESS,
+  UPDATE_SUCCESS,
+  GET_SUCCESS,
+  DELETE_SUCCESS,
+  CREATE_FAIL,
+  UPDATE_FAIL,
+  GET_FAIL,
+  DELETE_FAIL,
+} = require("./constants");
 
 //!TEST ENDPOINT
 router.get("/test", function (req, res) {
@@ -17,12 +27,13 @@ router.post("/create/:listId", async (req, res) => {
     const taskEntry = await TaskModel.create(task);
 
     res.status(200).json({
-      message: "New task has successfully been created!",
+      message: CREATE_SUCCESS,
       taskEntry,
     });
   } catch (err) {
     res.status(500).json({
-      message: `Task could not be created: ${err}`,
+      message: CREATE_FAIL,
+      error: err
     });
   }
 });
@@ -38,12 +49,13 @@ router.put("/update/:id", async (req, res) => {
     const updatedTask = await TaskModel.update(task, query);
 
     res.status(200).json({
-      message: "Task has successfully been updated!",
+      message: UPDATE_SUCCESS,
       updatedTask,
     });
   } catch (err) {
     res.status(500).json({
-      message: `Could not update task: ${err}`,
+      message: UPDATE_FAIL,
+      error: err
     });
   }
 });
@@ -56,11 +68,12 @@ router.delete("/delete/:id", async (req, res) => {
     TaskModel.destroy(query);
 
     res.status(200).json({
-      message: "Your task has successfully been destroyed!",
+      message: DELETE_SUCCESS
     });
   } catch (err) {
     res.status(500).json({
-      message: `Could not delete task: ${err}`,
+      message: DELETE_FAIL,
+      error: err
     });
   }
 });
