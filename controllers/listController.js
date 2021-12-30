@@ -11,7 +11,9 @@ const {
   UPDATE_FAIL,
   GET_FAIL,
   DELETE_FAIL,
+  NOT_FOUND
 } = require("./constants");
+const { Z_ERRNO } = require("zlib");
 
 //! TEST ENDPOINT
 router.get("/test", function (req, res) {
@@ -37,7 +39,8 @@ router.post("/create", async (req, res) => {
   } catch (err) {
     chalk.redBright(
       res.status(500).json({
-        message: `List could not be created: ${err}`,
+        message: CREATE_FAIL,
+        error: err
       })
     );
   }
@@ -64,7 +67,8 @@ router.get("/all", async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: `Lists could not be retrieved: ${err}`,
+      message: GET_FAIL,
+      error: err
     });
   }
 });
@@ -90,12 +94,13 @@ router.get("/:id", async (req, res) => {
   } catch (err) {
     if (err === 404) {
       res.status(404).json({
-        message: "Could not find that list",
+        message: NOT_FOUND,
         error: err,
       });
     } else {
       res.status(500).json({
-        message: `List could not be retrieved: ${err}`,
+        message: GET_FAIL,
+        error: err
       });
     }
   }
@@ -122,7 +127,7 @@ router.get("/:title", async (req, res) => {
     if (err === 404) {
       res.status(404).json({
         message: GET_FAIL,
-        error: "You have no lists by that title",
+        error: NOT_FOUND,
       });
     } else {
       res.status(500).json({
