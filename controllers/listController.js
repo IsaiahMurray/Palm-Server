@@ -14,11 +14,6 @@ const {
   NOT_FOUND
 } = require("./constants");
 
-//! TEST ENDPOINT
-router.get("/test", function (req, res) {
-  res.send("Hey!! This is the list route!");
-});
-
 //! CREATE LIST
 router.post("/create", async (req, res) => {
   const { title, description } = req.body;

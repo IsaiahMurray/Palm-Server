@@ -2,10 +2,17 @@ const router = require("express").Router();
 const { IconModel } = require("../models");
 const chalk = require("chalk");
 
-//! TEST ENDPOINT
-router.get("/test", function (req, res) {
-  res.send("Hey!! This is the icon route!");
-});
+const {
+  CREATE_SUCCESS,
+  UPDATE_SUCCESS,
+  GET_SUCCESS,
+  DELETE_SUCCESS,
+  CREATE_FAIL,
+  UPDATE_FAIL,
+  GET_FAIL,
+  DELETE_FAIL,
+  NOT_FOUND
+} = require("./constants");
 
 //! CREATE ICON
 router.post("/create", async (req, res) => {
@@ -17,13 +24,14 @@ router.post("/create", async (req, res) => {
     const newIcon = await IconModel.create(icon);
 
     res.status(200).json({
-      message: "New icon has successfully been added!",
+      message: CREATE_SUCCESS,
       newIcon,
     });
   } catch (err) {
     chalk.redBright(
       res.status(500).json({
-        message: `Icon could not be created: ${err}`,
+        message: CREATE_FAIL,
+        error: err
       })
     );
   }
@@ -35,12 +43,13 @@ router.get("/:iconId", async (req, res) => {
     const icon = await IconModel.findOne({ where: { id: req.params.iconId } });
 
     res.status(200).json({
-      message: "Icons have successfully been retrieved",
+      message: GET_SUCCESS,
       icon,
     });
   } catch (err) {
     res.status(500).json({
-      message: `Icon could not be retrieved: ${err}`,
+      message: GET_FAIL,
+      error: err
     });
   }
 });
@@ -56,13 +65,14 @@ router.get("/all", async (req, res) => {
       });
     } else {
       return res.status(200).json({
-        message: "Icons have successfully been retrieved",
+        message: CREATE_SUCCESS,
         allIcons,
       });
     }
   } catch (err) {
     res.status(500).json({
-      message: `Icons could not be retrieved: ${err}`,
+      message: CREATE_FAIL,
+      error: err
     });
   }
 });
@@ -76,12 +86,13 @@ router.put("/edit/:iconId", async (req, res) => {
     );
 
     res.status(200).json({
-      message: "Icon has been updated!",
+      message: UPDATE_SUCCESS,
       updatedIcon,
     });
   } catch (err) {
     res.status(500).json({
-      message: `Could not update icon: ${err}`,
+      message: UPDATE_FAIL,
+      error: err
     });
   }
 });
@@ -93,12 +104,13 @@ router.delete("/delete/:id", async (req, res) => {
   try {
     const destroyedIcon = await IconModel.destroy(query);
     res.status(200).json({
-      message: "Icon has been destroyed!",
+      message: DELETE_SUCCESS,
       destroyedIcon,
     });
   } catch (err) {
     res.status(500).json({
-      message: `Could not destroy list: ${err}`,
+      message: DELETE_FAIL,
+      error: err
     });
   }
 });

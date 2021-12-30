@@ -13,12 +13,6 @@ const {
   DELETE_FAIL,
   NOT_FOUND
 } = require("./constants");
-const { isError } = require("util");
-
-//! TEST ENDPOINT
-router.get("/test", function (req, res) {
-    res.send("Hey!! This is the category route!");
-  });
   
   //! CREATE CATEGORY
   router.post("/create", async (req, res) => {
