@@ -58,7 +58,7 @@ router.get("/all", async (req, res) => {
   }
 });
 
-//! GET LISTS BY ID
+//! GET LIST BY ID
 router.get("/:id", async (req, res) => {
   let id = req.params.id;
   try {
