@@ -23,13 +23,9 @@ const db = require('../db');
             allowNull: false,
         },
         admin: {
-            type: DataTypes.BOOLEAN,
+            type: DataTypes.ENUM("user", "admin"),
             allowNull: false
-        },
-        bio: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
+        }
         // profilePicture: {
         //     type: DataTypes.
         // }
