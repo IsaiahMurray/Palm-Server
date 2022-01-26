@@ -1,35 +1,39 @@
-const jwt = require("jsonwebtoken");
+const {
+  INVALID_TOKEN,
+  TOKEN_ERROR,
+  NO_AUTH,
+} = require("../controllers/constants");
+const { jwt } = require("../services");
 const { UserModel } = require("../models");
-require("dotenv").config();
 
-const ValidateAdmin = (req, res, next) => {
-  const token = req.headers.authorization;
-  if (req.method === "OPTIONS") {
-    return next();
-  } else if (!token) {
-    return res.status(403).send({ auth: false, message: "No token provided" });
-  } else {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodeToken) => {
-      if (!err && decodeToken) {
-        UserModel.findOne({
-          where: {
-            id: decodeToken.id,
-            admin: true
-          },
-        })
-          .then((user) => {
-            if (!user) throw err;
-
-            req.user = user;
-            return next();
-          })
-          .catch((err) => next(err));
+module.exports = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization;
+    const result = await jwt.verifyJWT(token);
+    if (result) {
+      const admin = await UserModel.findOne({
+        where: {
+          id: req.userId,
+          role: "admin",
+        },
+      });
+      if (admin) {
+        next();
       } else {
-        req.errors = err;
-        return res.status(500).send("Not Authorized");
+        throw new Error(NO_AUTH);
       }
-    });
+    } else {
+      throw new Error(INVALID_TOKEN);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      const errorMessage = {
+        title: TOKEN_ERROR,
+        info: {
+          message: e.message,
+        },
+      };
+      res.send(errorMessage);
+    }
   }
 };
-
-module.exports = ValidateAdmin;
