@@ -171,4 +171,35 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+//! DELETE MULTIPLE LISTS BY ID (In progress)
+router.delete("/multi-delete/:idArr", async (req, res) => {
+  //const query = { where: { id: req.params.id, userId: req.user.id } };
+  const idArr = req.params.idArr;
+  const userId = req.user.id;
+
+  try {
+    let arr = [];
+    idArr.forEach((id) => {
+      let found = ListModel.findOne({
+        where: {
+          id: id,
+          userId: userId
+        }
+      })
+      if(found){
+        found.push(arr);
+      }
+    })
+    
+    res.status(200).json({
+      message: "IT WORKED",
+      arr,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: DELETE_FAIL,
+    });
+  }
+});
+
 module.exports = router;
