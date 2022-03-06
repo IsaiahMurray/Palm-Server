@@ -22,7 +22,7 @@ const db = require('../db');
             type: DataTypes.STRING,
             allowNull: false,
         },
-        admin: {
+        role: {
             type: DataTypes.ENUM("user", "admin"),
             allowNull: false
         }
