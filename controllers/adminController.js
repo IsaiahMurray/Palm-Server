@@ -88,4 +88,29 @@ adminController.route("/modify-role/:id").put(async (req, res) => {
  ******* ADMIN USER DELETE ********
  *********************************/
 
+ adminController.route("/delete/:id").delete(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const destroyedUser = await services.admin.remove(id);
+
+    res.status(200).json({
+      destroyedUser,
+      info: {
+        message: DELETE_SUCCESS,
+      },
+    });
+  } catch (e) {
+    if (e instanceof Error) {
+      const errorMessage = {
+        title: DELETE_FAIL,
+        info: {
+          message: e.message,
+        },
+      };
+      res.send(errorMessage);
+    }
+  }
+});
+
+
 module.exports = adminController;
