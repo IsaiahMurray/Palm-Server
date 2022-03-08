@@ -3,7 +3,7 @@ const chalk = require("chalk");
 
 const Services = require("../services/index");
 const userController = require("express").Router();
-const {ValidateSession} = require("../middleware");
+const { ValidateSession } = require("../middleware");
 
 const {
   INCORRECT_EMAIL_PASSWORD,
@@ -14,6 +14,8 @@ const {
   UPDATE_FAIL,
   TITLE_LOGIN_ERROR,
   TITLE_SIGNUP_ERROR,
+  DELETE_FAIL,
+  DELETE_SUCCESS,
 } = require("../controllers/constants");
 const services = require("../services/index");
 
@@ -99,16 +101,20 @@ userController.route("/login").post(async (req, res) => {
  *********************************/
 userController.route("/update-name").put(ValidateSession, async (req, res) => {
   try {
-    const {firstName, lastName } = req.body;
-    const {id} = req.user;
+    const { firstName, lastName } = req.body;
+    const { id } = req.user;
 
-    const updatedUserName = await services.user.modifyName(id, firstName, lastName);
+    const updatedUserName = await services.user.modifyName(
+      id,
+      firstName,
+      lastName
+    );
     res.json({
       user: updatedUserName,
       info: {
-        message: UPDATE_SUCCESS
-      }
-    })
+        message: UPDATE_SUCCESS,
+      },
+    });
   } catch (e) {
     if (e instanceof Error) {
       const errorMessage = {
@@ -120,24 +126,24 @@ userController.route("/update-name").put(ValidateSession, async (req, res) => {
       res.send(errorMessage);
     }
   }
-})
+});
 
 /**********************************
- ******   USER UPDATE NAME  *******
+ ******   USER UPDATE EMAIL  ******
  *********************************/
 
- userController.route("/update-email").put(ValidateSession, async (req, res) => {
+userController.route("/update-email").put(ValidateSession, async (req, res) => {
   try {
-    const {email} = req.body;
-    const {id} = req.user;
+    const { email } = req.body;
+    const { id } = req.user;
 
     const updatedUserEmail = await services.user.modifyEmail(id, email);
     res.json({
       user: updatedUserEmail,
       info: {
-        message: UPDATE_SUCCESS
-      }
-    })
+        message: UPDATE_SUCCESS,
+      },
+    });
   } catch (e) {
     if (e instanceof Error) {
       const errorMessage = {
@@ -149,16 +155,69 @@ userController.route("/update-name").put(ValidateSession, async (req, res) => {
       res.send(errorMessage);
     }
   }
-})
+});
 
- /**********************************
- ******   USER UPDATE NAME  *******
+/**********************************
+ *****   USER UPDATE PASSWORD  *****
  *********************************/
 
- 
+userController
+  .route("/update-password")
+  .put(ValidateSession, async (req, res) => {
+    try {
+      const { password } = req.body;
+      const { id } = req.user;
+      const hashedPassword = await Services.password.hashPassword(password);
+      const updatedUserPass = await services.user.modifyPassword(
+        id,
+        hashedPassword
+      );
+      res.json({
+        user: updatedUserPass,
+        info: {
+          message: UPDATE_SUCCESS,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Error) {
+        const errorMessage = {
+          title: UPDATE_FAIL,
+          info: {
+            message: e.message,
+          },
+        };
+        res.send(errorMessage);
+      }
+    }
+  });
+
 /**********************************
  ********   USER DELETE   *********
  *********************************/
+
+userController.route("/delete").delete(ValidateSession, async (req, res) => {
+  try {
+    const { id } = req.user;
+    const destroyedUser = await services.user.remove(id);
+
+    res.status(200).json({
+      destroyedUser,
+      info: {
+        message: DELETE_SUCCESS,
+      },
+    });
+  } catch (e) {
+    if (e instanceof Error) {
+      const errorMessage = {
+        title: DELETE_FAIL,
+        info: {
+          message: e.message,
+        },
+      };
+      res.send(errorMessage);
+    }
+  }
+});
 
 /**********************************
  ********   ADMIN CREATE   ********

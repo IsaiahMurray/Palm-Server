@@ -70,19 +70,19 @@ const modifyEmail = async (id, email) => {
   }
 }
 
-const modifyPassword = async ({userId, password}) => {
+const modifyPassword = async (id, password) => {
   try {
-    const updatedUser = await UserModel.update(
+    const updatedUserPass = await UserModel.update(
       {
-        password
+        password: password
       },
       {
         where: {
-          id: userId,
+          id: id,
         },
       }
     );
-    return updatedUser;
+    return updatedUserPass;
   } catch (e) {
     throw e;
   }
@@ -126,11 +126,11 @@ const getAll = async () => {
   }
 };
 
-const remove = async ({ userId }) => {
+const remove = async (id) => {
   try {
     const deletedUser = await UserModel.destroy({
       where: {
-        id: userId,
+        id: id
       },
     });
     return deletedUser;
