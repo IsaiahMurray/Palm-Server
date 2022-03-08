@@ -3,15 +3,19 @@ const chalk = require("chalk");
 
 const Services = require("../services/index");
 const userController = require("express").Router();
+const {ValidateSession} = require("../middleware");
 
 const {
   INCORRECT_EMAIL_PASSWORD,
   USER_CREATED,
   ADMIN_CREATED,
   USER_FOUND,
+  UPDATE_SUCCESS,
+  UPDATE_FAIL,
   TITLE_LOGIN_ERROR,
   TITLE_SIGNUP_ERROR,
 } = require("../controllers/constants");
+const services = require("../services/index");
 
 /**********************************
  ********   USER CREATE   *********
@@ -91,16 +95,32 @@ userController.route("/login").post(async (req, res) => {
 });
 
 /**********************************
- ********   USER UPDATE   *********
+ ******   USER UPDATE NAME  *******
  *********************************/
+userController.route("/update-name").put(ValidateSession, async (req, res) => {
+  try {
+    const {firstName, lastName } = req.body;
+    const {id} = req.user;
 
- try {
-   const {firstName, lastName, email, password} = req.body;
-   const {userId} = req.user.id;
-
- } catch (e) {
-   
- }
+    const updatedUser = await services.user.modifyName(id, firstName, lastName);
+    res.json({
+      user: updatedUser,
+      info: {
+        message: UPDATE_SUCCESS
+      }
+    })
+  } catch (e) {
+    if (e instanceof Error) {
+      const errorMessage = {
+        title: UPDATE_FAIL,
+        info: {
+          message: e.message,
+        },
+      };
+      res.send(errorMessage);
+    }
+  }
+})
 
 /**********************************
  ********   USER DELETE   *********

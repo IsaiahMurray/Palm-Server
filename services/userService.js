@@ -33,16 +33,16 @@ const adminCreate = async ({ firstName, lastName, email, password }) => {
   }
 };
 
-const modifyName = async ({ userId, firstName, lastName }) => {
+const modifyName = async ( id, firstName, lastName ) => {
   try {
     const updatedUser = await UserModel.update(
       {
-        firstName,
-        lastName
+        firstName: firstName,
+        lastName: lastName
       },
       {
         where: {
-          id: userId,
+          id: id,
         },
       }
     );

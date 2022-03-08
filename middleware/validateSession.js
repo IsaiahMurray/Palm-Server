@@ -1,19 +1,25 @@
+const chalk = require("chalk");
 const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models");
 require("dotenv").config();
 
 const ValidateSession = (req, res, next) => {
   const token = req.headers.authorization;
+  console.log(chalk.redBright(token))
   if (req.method === "OPTIONS") {
     return next();
   } else if (!token) {
     return res.status(403).send({ auth: false, message: "No token provided" });
   } else {
     jwt.verify(token, process.env.JWT_SECRET, (err, decodeToken) => {
+      for (item in decodeToken) {
+        console.log(chalk.redBright(item))
+    };
+      console.log(chalk.redBright(decodeToken))
       if (!err && decodeToken) {
         UserModel.findOne({
           where: {
-            id: decodeToken.id,
+            id: decodeToken.userId,
           },
         })
           .then((user) => {
