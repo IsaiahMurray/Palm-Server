@@ -70,6 +70,24 @@ const modifyEmail = async ({userId, email}) => {
   }
 }
 
+const modifyPassword = async ({userId, password}) => {
+  try {
+    const updatedUser = await UserModel.update(
+      {
+        password
+      },
+      {
+        where: {
+          id: userId,
+        },
+      }
+    );
+    return updatedUser;
+  } catch (e) {
+    throw e;
+  }
+}
+
 const modifyRole = async ({ userId, role }) => {
   try {
     const updatedUser = await UserModel.update(
@@ -139,6 +157,7 @@ module.exports = {
   adminCreate,
   modifyName,
   modifyEmail,
+  modifyPassword,
   modifyRole,
   getAll,
   getByEmail,
