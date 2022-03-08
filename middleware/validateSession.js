@@ -5,7 +5,6 @@ require("dotenv").config();
 
 const ValidateSession = (req, res, next) => {
   const token = req.headers.authorization;
-  console.log(chalk.redBright(token))
   if (req.method === "OPTIONS") {
     return next();
   } else if (!token) {
