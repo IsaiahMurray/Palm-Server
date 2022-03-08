@@ -72,6 +72,7 @@ userController.route("/login").post(async (req, res) => {
 
     res.json({
       user: foundUser,
+      token: token,
       info: {
         message: USER_FOUND,
       },
@@ -93,11 +94,19 @@ userController.route("/login").post(async (req, res) => {
  ********   USER UPDATE   *********
  *********************************/
 
+ try {
+   const {firstName, lastName, email, password} = req.body;
+   const {userId} = req.user.id;
+
+ } catch (e) {
+   
+ }
+
 /**********************************
  ********   USER DELETE   *********
  *********************************/
 
-/*********************************
+/**********************************
  ********   ADMIN CREATE   ********
  *********************************/
 

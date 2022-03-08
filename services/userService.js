@@ -33,14 +33,12 @@ const adminCreate = async ({ firstName, lastName, email, password }) => {
   }
 };
 
-const modify = async ({ userId, firstName, lastName, email, password }) => {
+const modifyName = async ({ userId, firstName, lastName }) => {
   try {
     const updatedUser = await UserModel.update(
       {
         firstName,
-        lastName,
-        email,
-        password,
+        lastName
       },
       {
         where: {
@@ -53,6 +51,24 @@ const modify = async ({ userId, firstName, lastName, email, password }) => {
     throw e;
   }
 };
+
+const modifyEmail = async ({userId, email}) => {
+  try {
+    const updatedUser = await UserModel.update(
+      {
+        email
+      },
+      {
+        where: {
+          id: userId,
+        },
+      }
+    );
+    return updatedUser;
+  } catch (e) {
+    throw e;
+  }
+}
 
 const modifyRole = async ({ userId, role }) => {
   try {
@@ -91,6 +107,7 @@ const getAll = async () => {
     throw e;
   }
 };
+
 const remove = async ({ userId }) => {
   try {
     const deletedUser = await UserModel.destroy({
@@ -103,6 +120,7 @@ const remove = async ({ userId }) => {
     throw e;
   }
 };
+
 const adminRemove = async ({ userId }) => {
   try {
     const deletedUser = await UserModel.destroy({
@@ -119,7 +137,8 @@ const adminRemove = async ({ userId }) => {
 module.exports = {
   create,
   adminCreate,
-  modify,
+  modifyName,
+  modifyEmail,
   modifyRole,
   getAll,
   getByEmail,
