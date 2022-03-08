@@ -8,7 +8,6 @@ const { ValidateSession } = require("../middleware");
 const {
   INCORRECT_EMAIL_PASSWORD,
   USER_CREATED,
-  ADMIN_CREATED,
   USER_FOUND,
   UPDATE_SUCCESS,
   UPDATE_FAIL,
@@ -218,51 +217,5 @@ userController.route("/delete").delete(ValidateSession, async (req, res) => {
     }
   }
 });
-
-/**********************************
- ********   ADMIN CREATE   ********
- *********************************/
-
-userController.route("/register/admin").post(async (req, res) => {
-  try {
-    const { firstName, lastName, email, password } = req.body;
-
-    if (!email || !password) throw new Error(INCORRECT_EMAIL_PASSWORD);
-
-    const hashedPassword = await Services.password.hashPassword(password);
-    const userId = await Services.user.adminCreate({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-    });
-
-    res.json({
-      userId,
-      info: {
-        message: ADMIN_CREATED,
-      },
-    });
-  } catch (e) {
-    if (e instanceof Error) {
-      const errorMessage = {
-        title: TITLE_SIGNUP_ERROR,
-        info: {
-          message:
-            e.message === "Validation error" ? e.original.detail : e.message,
-        },
-      };
-      res.send(errorMessage);
-    }
-  }
-});
-
-/**********************************
- ****** MODIFY ADMIN STATUS *******
- *********************************/
-
-/**********************************
- ******* ADMIN USER DELETE ********
- *********************************/
 
 module.exports = userController;

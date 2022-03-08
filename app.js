@@ -10,6 +10,7 @@ const middlewares = require("./middleware");
 const controllers = require("./controllers");
 
 app.use("/user", controllers.UserController);
+app.use("/admin",middlewares.ValidateAdmin, controllers.AdminController);
 app.use("/list", middlewares.ValidateSession, controllers.ListController);
 app.use('/task', middlewares.ValidateSession, controllers.TaskController);
 app.use('/icon', middlewares.ValidateAdmin, controllers.IconController);

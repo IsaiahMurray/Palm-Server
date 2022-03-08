@@ -11,10 +11,6 @@ const ValidateSession = (req, res, next) => {
     return res.status(403).send({ auth: false, message: "No token provided" });
   } else {
     jwt.verify(token, process.env.JWT_SECRET, (err, decodeToken) => {
-      for (item in decodeToken) {
-        console.log(chalk.redBright(item))
-    };
-      console.log(chalk.redBright(decodeToken))
       if (!err && decodeToken) {
         UserModel.findOne({
           where: {

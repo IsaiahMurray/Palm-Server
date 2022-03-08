@@ -3,28 +3,32 @@ const {
   TOKEN_ERROR,
   NO_AUTH,
 } = require("../controllers/constants");
-const { jwt } = require("../services");
+const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models");
 
 module.exports = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    const result = await jwt.verifyJWT(token);
-    if (result) {
-      const admin = await UserModel.findOne({
-        where: {
-          id: req.userId,
-          role: "admin",
-        },
-      });
-      if (admin) {
-        next();
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodeToken) => {
+      if (!err && decodeToken) {
+        UserModel.findOne({
+          where: {
+            id: decodeToken.userId,
+            role: "admin",
+          },
+        })
+          .then((user) => {
+            if (!user) throw err;
+
+            req.user = user;
+            return next();
+          })
+          .catch((err) => next(err));
       } else {
-        throw new Error(NO_AUTH);
+        req.errors = err;
+        return res.status(500).send("Not Authorized");
       }
-    } else {
-      throw new Error(INVALID_TOKEN);
-    }
+    });
   } catch (e) {
     if (e instanceof Error) {
       const errorMessage = {
