@@ -102,9 +102,9 @@ userController.route("/update-name").put(ValidateSession, async (req, res) => {
     const {firstName, lastName } = req.body;
     const {id} = req.user;
 
-    const updatedUser = await services.user.modifyName(id, firstName, lastName);
+    const updatedUserName = await services.user.modifyName(id, firstName, lastName);
     res.json({
-      user: updatedUser,
+      user: updatedUserName,
       info: {
         message: UPDATE_SUCCESS
       }
@@ -122,6 +122,40 @@ userController.route("/update-name").put(ValidateSession, async (req, res) => {
   }
 })
 
+/**********************************
+ ******   USER UPDATE NAME  *******
+ *********************************/
+
+ userController.route("/update-email").put(ValidateSession, async (req, res) => {
+  try {
+    const {email} = req.body;
+    const {id} = req.user;
+
+    const updatedUserEmail = await services.user.modifyEmail(id, email);
+    res.json({
+      user: updatedUserEmail,
+      info: {
+        message: UPDATE_SUCCESS
+      }
+    })
+  } catch (e) {
+    if (e instanceof Error) {
+      const errorMessage = {
+        title: UPDATE_FAIL,
+        info: {
+          message: e.message,
+        },
+      };
+      res.send(errorMessage);
+    }
+  }
+})
+
+ /**********************************
+ ******   USER UPDATE NAME  *******
+ *********************************/
+
+ 
 /**********************************
  ********   USER DELETE   *********
  *********************************/

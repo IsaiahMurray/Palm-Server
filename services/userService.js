@@ -52,15 +52,15 @@ const modifyName = async ( id, firstName, lastName ) => {
   }
 };
 
-const modifyEmail = async ({userId, email}) => {
+const modifyEmail = async (id, email) => {
   try {
     const updatedUser = await UserModel.update(
       {
-        email
+        email: email
       },
       {
         where: {
-          id: userId,
+          id: id
         },
       }
     );
