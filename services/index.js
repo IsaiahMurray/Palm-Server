@@ -4,5 +4,6 @@ module.exports = {
     password: require("./passwordService"),
     jwt: require('./jwtService'),
     list: require("./listService"),
+    task: require("./taskService"),
     
 }

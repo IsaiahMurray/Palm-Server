@@ -1,5 +1,7 @@
-const router = require("express").Router();
 const { TaskModel } = require("../models");
+const taskController = require("express").Router();
+const Services = require("../services");
+
 const {
   CREATE_SUCCESS,
   UPDATE_SUCCESS,
@@ -11,20 +13,21 @@ const {
   DELETE_FAIL,
 } = require("./constants");
 
-//!TEST ENDPOINT
-router.get("/test", function (req, res) {
-  res.send("Hey!! This is the task route!");
-});
-
 //! CREATE TASK
-router.post("/create/:listId", async (req, res) => {
-  const task = {
-    description: req.body.description,
-    owner: req.user.id,
-    listId: req.params.listId,
-  };
+taskController.route("/create/:listId").post(async (req, res) => {
   try {
-    const taskEntry = await TaskModel.create(task);
+    const { description, color, categoryId, subCategoryId } = req.body;
+    const listId = req.params.listId;
+    const userId = req.user.id;
+
+    const taskEntry = await Services.task.create({
+      description,
+      color,
+      categoryId,
+      subCategoryId,
+      userId,
+      listId,
+    });
 
     res.status(200).json({
       message: CREATE_SUCCESS,
@@ -33,20 +36,19 @@ router.post("/create/:listId", async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: CREATE_FAIL,
-      error: err
+      error: err,
     });
   }
 });
 
 //! UPDATE TASK BY ID
-router.put("/update/:id", async (req, res) => {
-  const task = {
-    description: req.body.description,
-  };
+taskController.route("/update/:id").put(async (req, res) => {
+  const { description, color, categoryId, subCategoryId } = req.body;
 
-  const query = { where: { id: req.params.id } };
+  const id = req.params.id;
+  const userId = req.user.id;
   try {
-    const updatedTask = await TaskModel.update(task, query);
+    const updatedTask = await Services.task.modify({ description, color, categoryId, subCategoryId, id, userId})
 
     res.status(200).json({
       message: UPDATE_SUCCESS,
@@ -55,27 +57,28 @@ router.put("/update/:id", async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: UPDATE_FAIL,
-      error: err
+      error: err,
     });
   }
 });
 
 //! DELETE TASK BY ID
-router.delete("/delete/:id", async (req, res) => {
-  const query = { where: { id: req.params.id } };
+taskController.route("/delete/:id").delete(async (req, res) => {
+  const id = req.params.id;
+  const userId = req.user.id;
 
   try {
-    TaskModel.destroy(query);
+    Services.task.remove({id, userId});
 
     res.status(200).json({
-      message: DELETE_SUCCESS
+      message: DELETE_SUCCESS,
     });
   } catch (err) {
     res.status(500).json({
       message: DELETE_FAIL,
-      error: err
+      error: err,
     });
   }
 });
 
-module.exports = router;
+module.exports = taskController;

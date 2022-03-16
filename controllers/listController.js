@@ -16,7 +16,7 @@ const {
 } = require("./constants");
 
 //! CREATE LIST
-listController.route.post("/create", async (req, res) => {
+listController.route("/create").post( async (req, res) => {
   const { title, description, categoryId } = req.body;
   const userId = req.user.id;
 
@@ -38,7 +38,7 @@ listController.route.post("/create", async (req, res) => {
 });
 
 //! GET ALL LISTS FROM SINGLE USER
-listController.route.get("/all", async (req, res) => {
+listController.route("/all").get(async (req, res) => {
   try {
     const userId = req.user.id;
     const allLists = await Services.list.getAll({userId})
@@ -62,7 +62,7 @@ listController.route.get("/all", async (req, res) => {
 });
 
 //! GET LIST BY ID
-listController.route.get("/:id", async (req, res) => {
+listController.route("/:id").get( async (req, res) => {
   try {
     const id = req.params.id;
     const userId = req.user.id; 
@@ -92,7 +92,7 @@ listController.route.get("/:id", async (req, res) => {
 });
 
 //! GET LISTS BY TITLE(NEEDS WORKED ON)
-listController.route.get("/:title", async (req, res) => {
+listController.route("/:title").get( async (req, res) => {
   console.log(chalk.redBright("HIT THE ENDPOINT"))
   try {
     const userId = req.user.id;
@@ -122,7 +122,7 @@ listController.route.get("/:title", async (req, res) => {
 });
 
 //! UPDATE LIST BY ID
-listController.route.put("/edit/:listId", async (req, res) => {
+listController.route("/edit/:listId").put( async (req, res) => {
   try {
     const { title, description, categoryId } = req.body;
     const userId = req.user.id;
@@ -144,14 +144,15 @@ listController.route.put("/edit/:listId", async (req, res) => {
 });
 
 //! DELETE LIST BY ID
-listController.route.delete("/delete/:id", async (req, res) => {
-  const query = { where: { id: req.params.id, userId: req.user.id } };
+listController.route("/delete/:id").delete( async (req, res) => {
+  const id = req.params.id;
+  const userId = req.user.id;
 
   try {
-    const destroyedList = await ListModel.destroy(query);
+    Services.list.remove({id, userId});
+
     res.status(200).json({
       message: DELETE_SUCCESS,
-      destroyedList,
     });
   } catch (err) {
     res.status(500).json({
@@ -161,7 +162,7 @@ listController.route.delete("/delete/:id", async (req, res) => {
 });
 
 //! DELETE MULTIPLE LISTS BY ID (In progress)
-listController.route.delete("/multi-delete/:idArr", async (req, res) => {
+listController.route("/multi-delete/:idArr").delete( async (req, res) => {
   //const query = { where: { id: req.params.id, userId: req.user.id } };
   const idArr = req.params.idArr;
   const userId = req.user.id;

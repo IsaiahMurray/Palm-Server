@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize');
 const db = require('../db');
 
-const Todo = db.define('task', {
+const Task = db.define('task', {
     userId: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -28,4 +28,4 @@ const Todo = db.define('task', {
      }
 })
 
-module.exports = Todo;
+module.exports = Task;
