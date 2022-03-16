@@ -1,6 +1,7 @@
-const router = require("express").Router();
-const { ListModel, TaskModel } = require("../models");
 const chalk = require("chalk");
+const { ListModel } = require("../models");
+const Services = require("../services");
+const listController = require("express").Router();
 
 const {
   CREATE_SUCCESS,
@@ -15,16 +16,12 @@ const {
 } = require("./constants");
 
 //! CREATE LIST
-router.post("/create", async (req, res) => {
-  const { title, description } = req.body;
-  const listEntry = {
-    title: title,
-    description: description,
-    userId: req.user.id,
-  };
+listController.route.post("/create", async (req, res) => {
+  const { title, description, categoryId } = req.body;
+  const userId = req.user.id;
 
   try {
-    const newList = await ListModel.create(listEntry);
+    const newList = await Services.list.create({title, description, categoryId, userId});
 
     res.status(200).json({
       message: CREATE_SUCCESS,
@@ -41,13 +38,10 @@ router.post("/create", async (req, res) => {
 });
 
 //! GET ALL LISTS FROM SINGLE USER
-router.get("/all", async (req, res) => {
+listController.route.get("/all", async (req, res) => {
   try {
-    const allLists = await ListModel.findAll({
-      where: { userId: req.user.id },
-      //include: [{ model: TodoModel, as: "todo Items" }],
-      required: true,
-    });
+    const userId = req.user.id;
+    const allLists = await Services.list.getAll({userId})
 
     if (allLists.length === 0 || null) {
       return res.status(204).json({
@@ -68,14 +62,11 @@ router.get("/all", async (req, res) => {
 });
 
 //! GET LIST BY ID
-router.get("/:id", async (req, res) => {
-  let id = req.params.id;
+listController.route.get("/:id", async (req, res) => {
   try {
-    const foundList = await ListModel.findOne({
-      where: { id: id, userId: req.user.id },
-      include: [{ model: TaskModel, as: "tasks" }],
-      required: true,
-    });
+    const id = req.params.id;
+    const userId = req.user.id; 
+    const foundList = await Services.list.getById({id, userId})
 
     if (foundList.length === 0 || null) {
       throw 404;
@@ -100,15 +91,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//! GET LISTS BY TITLE
-router.get("/:title", async (req, res) => {
-  let title = req.params.title;
+//! GET LISTS BY TITLE(NEEDS WORKED ON)
+listController.route.get("/:title", async (req, res) => {
+  console.log(chalk.redBright("HIT THE ENDPOINT"))
   try {
-    const foundList = await ListModel.findAll({
-      where: { title: title, userId: req.user.id },
-      include: [{ model: TaskModel, as: "tasks" }],
-      required: true,
-    });
+    const userId = req.user.id;
+
+    const foundList = await Services.list.getByTitle({title, userId})
     if (foundList.length === 0 || null) {
       throw 404;
     } else {
@@ -133,14 +122,14 @@ router.get("/:title", async (req, res) => {
 });
 
 //! UPDATE LIST BY ID
-router.put("/edit/:listId", async (req, res) => {
-  const { title, description } = req.body;
-
+listController.route.put("/edit/:listId", async (req, res) => {
   try {
-    const updatedList = await ListModel.update(
-      { title, description },
-      { where: { id: req.params.listId, userId: req.user.id } }
-    );
+    const { title, description, categoryId } = req.body;
+    const userId = req.user.id;
+    const id = req.params.listId
+    
+    const updatedList = await Services.list.modify({title, description, categoryId, id, userId})
+    
 
     res.status(200).json({
       message: UPDATE_SUCCESS,
@@ -155,7 +144,7 @@ router.put("/edit/:listId", async (req, res) => {
 });
 
 //! DELETE LIST BY ID
-router.delete("/delete/:id", async (req, res) => {
+listController.route.delete("/delete/:id", async (req, res) => {
   const query = { where: { id: req.params.id, userId: req.user.id } };
 
   try {
@@ -172,7 +161,7 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 //! DELETE MULTIPLE LISTS BY ID (In progress)
-router.delete("/multi-delete/:idArr", async (req, res) => {
+listController.route.delete("/multi-delete/:idArr", async (req, res) => {
   //const query = { where: { id: req.params.id, userId: req.user.id } };
   const idArr = req.params.idArr;
   const userId = req.user.id;
@@ -202,4 +191,4 @@ router.delete("/multi-delete/:idArr", async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = listController;

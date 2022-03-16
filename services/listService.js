@@ -1,20 +1,25 @@
 const chalk = require("chalk");
 const { ListModel, TaskModel } = require("../models");
 
-const create = async ({ title, description, userId }) => {
+const create = async ({ title, description, categoryId, userId }) => {
   try {
-    const newList = await ListModel.create({ title, description, userId });
+    const newList = await ListModel.create({
+      title,
+      description,
+      categoryId,
+      userId,
+    });
     return newList;
   } catch (e) {
     throw e;
   }
 };
 
-const getaAll = async ({ userId }) => {
+const getAll = async ({ userId }) => {
   try {
     const allLists = await ListModel.findAll({
       where: { userId },
-      include: [{ model: TaskModel, as: "Tasks" }],
+      include: [{ model: TaskModel, as: "tasks" }],
       required: true,
     });
 
@@ -28,7 +33,7 @@ const getaAll = async ({ userId }) => {
   }
 };
 
-const getbyId = async ({ id, userId }) => {
+const getById = async ({ id, userId }) => {
   try {
     const foundList = await ListModel.findOne({
       where: { id, userId },
@@ -46,27 +51,35 @@ const getbyId = async ({ id, userId }) => {
   }
 };
 
-const getbyTitle = async ({ title, userId }) => {
+const getByTitle = async ({ title, userId }) => {
   try {
-    const foundList = await ListModel.findAll({
-      where: { title, userId },
+    const allLists = await ListModel.findAll({
+      where: { userId },
       include: [{ model: TaskModel, as: "tasks" }],
       required: true,
     });
-    if (foundList.length === 0 || null) {
+
+    console.log(chalk.redBright(allLists));
+
+    const foundLists = allLists.filter((list) => {
+      let rTitle = list.title.replace(" ", "");
+      return rTitle === title;
+    });
+
+    if (foundLists.length === 0 || null) {
       throw 404;
     } else {
-      return foundList;
+      return foundLists;
     }
   } catch (e) {
     throw e;
   }
 };
 
-const modify = async ({ title, description, id, userId }) => {
+const modify = async ({title, description, categoryId, id, userId}) => {
   try {
     const updatedList = await ListModel.update(
-      { title, description },
+      { title,description, categoryId },
       { where: { id, userId } }
     );
 
@@ -85,6 +98,7 @@ const remove = async ({ id, userId }) => {
   }
 };
 
+//! NEEDS DEVELOPED
 const removeMany = async ({}) => {
   try {
     return;
@@ -95,9 +109,9 @@ const removeMany = async ({}) => {
 
 module.exports = {
   create,
-  getaAll,
-  getbyId,
-  getbyTitle,
+  getAll,
+  getById,
+  getByTitle,
   modify,
   remove,
   removeMany,
