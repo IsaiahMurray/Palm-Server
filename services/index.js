@@ -5,5 +5,6 @@ module.exports = {
     jwt: require('./jwtService'),
     list: require("./listService"),
     task: require("./taskService"),
+    icon: require("./iconService"),
     
 }
