@@ -6,5 +6,5 @@ module.exports = {
     list: require("./listService"),
     task: require("./taskService"),
     icon: require("./iconService"),
-    
+    category: require("./categoryService"),
 }

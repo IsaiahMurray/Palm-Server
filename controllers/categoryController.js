@@ -1,6 +1,7 @@
-const router = require("express").Router();
-const { CategoryModel, ListModel } = require("../models");
 const chalk = require("chalk");
+const { CategoryModel } = require("../models");
+const Services = require("../services");
+const categoryController = require('express').Router();
 
 const {
   CREATE_SUCCESS,
@@ -15,16 +16,12 @@ const {
 } = require("./constants");
   
   //! CREATE CATEGORY
-  router.post("/create", async (req, res) => {
+  categoryController.route('/create').post(async (req, res) => {
     const { title, iconId } = req.body;
-    const category = {
-      title: title,
-      iconId: iconId,
-      userId: req.user.id,
-    };
+    const userId = req.user.id;
   
     try {
-      const newCategory = await CategoryModel.create(category);
+      const newCategory = await Services.category.create({title, iconId, userId});
   
       res.status(200).json({
         message: CREATE_SUCCESS,
@@ -45,7 +42,6 @@ const {
     try {
       const categories = await CategoryModel.findAll({
         where: { userId: req.user.id },
-        //include: [{ model: TodoModel, as: "todo Items" }],
         required: true,
       });
   

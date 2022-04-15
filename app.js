@@ -14,6 +14,7 @@ app.use("/admin",middlewares.ValidateAdmin, controllers.AdminController);
 app.use("/list", middlewares.ValidateSession, controllers.ListController);
 app.use('/task', middlewares.ValidateSession, controllers.TaskController);
 app.use('/icon', middlewares.ValidateAdmin, controllers.IconController);
+app.use('/category', middlewares.ValidateAdmin, controllers.CategoryController);
 
 
 

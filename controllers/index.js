@@ -3,5 +3,6 @@ module.exports = {
     AdminController: require('./adminController'),
     ListController: require('./listController'),
     TaskController: require('./taskController'),
-    IconController: require('./iconController')
+    IconController: require('./iconController'),
+    CategoryController: require('./categoryController'),
 }
